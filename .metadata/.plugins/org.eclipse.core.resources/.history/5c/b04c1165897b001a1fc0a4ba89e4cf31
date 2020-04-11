@@ -1,0 +1,8 @@
+
+public interface AVLInterface {
+	public boolean isEmpty();
+	public int numElements();
+	public void insert(int element) throws DuplicatedKeyException;
+	public int remove(int element);
+	public int search (int element);
+}

@@ -1,0 +1,18 @@
+public class Main {
+
+	public static void main(String[] args) {
+		AVLTree arvore = new AVLTree();
+		
+		for (int i = 0; i < 5; i++) {
+			int rand = (int)(Math.random()*51);
+			try {
+				arvore.insert(rand);
+			} catch (DuplicatedKeyException e) {}
+			System.out.println(rand);
+		}
+		
+		System.out.println("\n" + arvore);
+
+	}
+
+}
