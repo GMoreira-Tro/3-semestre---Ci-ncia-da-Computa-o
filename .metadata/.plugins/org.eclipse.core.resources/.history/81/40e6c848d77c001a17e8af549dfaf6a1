@@ -23,8 +23,7 @@ public class Main {
 			arvore.remove(i);
 		}
 		
-		System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
-		System.out.println("\nTransformando em ArrayList: " + arvore.toArrayList());
+		System.out.println("\n" + arvore);
 	}
 
 }

@@ -4,8 +4,8 @@ public class Main {
 		AVLTree arvore = new AVLTree();
 		
 		for (int i = 0; i < 15; i++) {
-			int rand = (int)(Math.random()*31);
-			//int rand = i + 12;
+			//int rand = (int)(Math.random()*51);
+			int rand = i + 12;
 			try {
 				arvore.insert(rand);
 			} catch (DuplicatedKeyException e) {}
@@ -18,13 +18,13 @@ public class Main {
 			System.out.println("Tem o número: " + i + " ? " + arvore.binarySearch(i));
 		}
 		
-		for(int i = 10; i < 30; i++) {
-			System.out.println("\nTentando remover o elemento: " + i);
+		System.out.println();
+		for(int i = 10; i < 20; i++) {
+			System.out.println("Tentando remover o elemento: " + i);
 			arvore.remove(i);
 		}
 		
-		System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
-		System.out.println("\nTransformando em ArrayList: " + arvore.toArrayList());
+		System.out.println("\n" + arvore);
 	}
 
 }

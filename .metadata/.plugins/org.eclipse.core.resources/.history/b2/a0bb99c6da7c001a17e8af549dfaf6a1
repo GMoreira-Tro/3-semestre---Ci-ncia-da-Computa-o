@@ -18,7 +18,7 @@ public class Main {
 			System.out.println("Tem o número: " + i + " ? " + arvore.binarySearch(i));
 		}
 		
-		for(int i = 10; i < 30; i++) {
+		for(int i = 10; i < 20; i++) {
 			System.out.println("\nTentando remover o elemento: " + i);
 			arvore.remove(i);
 		}

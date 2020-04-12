@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 
 public class AVLTree implements AVLInterface {
 	BSTNode<Integer> root;
@@ -267,60 +266,46 @@ public class AVLTree implements AVLInterface {
 		BSTNode<Integer> father = node.getFather();
 		
 		if(left == null && right == null) {
-			if(father != null)
-			{
-				boolean isLeftFather = (father.getLeft() == node);
+			if(father == null)
+				root = null;
+			else {
+				boolean isLeftFather = father.getLeft() == node;
 				if(isLeftFather)
 					father.setLeft(null);
 				else
 					father.setRight(null);
-				verifyBalance(father);
 			}
 		}
 		
 		else {
 			if(left == null) {
 				if(father != null) {
-					boolean isLeftFather = (father.getLeft() == node);
-					if(isLeftFather) {
+					if(isLeftFather) 
 						father.setLeft(right);
-						right.setFather(father);
-					}
-					else {
+					else
 						father.setRight(right);
-						right.setFather(father);
-					}
 				}
-				else {
+				else
 					root = right;
-					right.setFather(null);
-				}
-				verifyBalance(right);
+				
+				right.setFather(father);
 			}
 			else if(right == null) {
 				if(father != null) {
-					boolean isLeftFather = (father.getLeft() == node);
-					if(isLeftFather) {
+					if(isLeftFather) 
 						father.setLeft(left);
-						left.setFather(father);
-					}
-					else {
+					else
 						father.setRight(left);
-						left.setFather(father);
-					}
 				}
-				else {
+				else
 					root = left;
-					left.setFather(null);
-				}
-				verifyBalance(left);
+				
+				left.setFather(father);
 			}
 			else {
 				if(father != null) {
-					boolean isLeftFather = (father.getLeft() == node);
 					if(isLeftFather) {
 						father.setLeft(left);
-						left.setFather(father);
 						BSTNode<Integer> mostRightNode = mostRightNode(father.getLeft());
 						mostRightNode.setRight(right);
 						right.setFather(mostRightNode);
@@ -328,7 +313,6 @@ public class AVLTree implements AVLInterface {
 					}
 					else {
 						father.setRight(right);
-						right.setFather(father);
 						BSTNode<Integer> mostLeftNode = mostLeftNode(father.getRight());
 						mostLeftNode.setRight(left);
 						left.setFather(mostLeftNode);
@@ -337,7 +321,6 @@ public class AVLTree implements AVLInterface {
 				}
 				else {
 					root = left;
-					left.setFather(null);
 					BSTNode<Integer> mostRightNode = mostRightNode(left);
 					mostRightNode.setRight(right);
 					right.setFather(mostRightNode);
@@ -346,7 +329,6 @@ public class AVLTree implements AVLInterface {
 			}
 			
 		}
-		node = null;
 	}
 	
 	private BSTNode<Integer> mostRightNode(BSTNode<Integer> referenceNode){
@@ -361,24 +343,5 @@ public class AVLTree implements AVLInterface {
 			return referenceNode;
 		else
 			return mostRightNode(referenceNode.getLeft());
-	}
-	
-	public ArrayList<Integer> toArrayList() {
-		ArrayList<Integer> list = toArrayList(new ArrayList<Integer>(), root);
-		 list.sort(null);
-		 return list;
-	}
-	
-	private ArrayList<Integer> toArrayList(ArrayList<Integer> list, BSTNode<Integer> referenceNode){
-		list.add(referenceNode.getElement());
-		
-		if (referenceNode.getLeft() != null) {	
-			 toArrayList(list,referenceNode.getLeft());
-		}
-		
-		if (referenceNode.getRight() != null) {
-			toArrayList(list,referenceNode.getRight());
-		}
-			return list;
 	}
 }
