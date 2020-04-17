@@ -104,7 +104,6 @@ public class Main {
 			
 		} while(!op.toLowerCase().equals("s"));*/
 		
-		System.out.println("Arvorezita:\n" + arvore + "\n");
 		System.out.println("Transformando em ArrayList: " + arvore.toArrayList());
 	}
 	

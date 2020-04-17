@@ -39,7 +39,10 @@ public class Main {
 						break;
 					/* Search */
 					case 'b':
-						System.out.println("Buscando o elemento: " + param + " ...");
+						System.out.println("\nBuscando o elemento: " + param + " ...");
+						System.out.println("Existe " + param + " ? " + arvore.binarySearch(intParam));
+						System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
+						
 						System.out.println("Existe " + param + "? " + arvore.binarySearch(intParam) + "\n");
 						break;
 					/* Remove */
@@ -104,7 +107,6 @@ public class Main {
 			
 		} while(!op.toLowerCase().equals("s"));*/
 		
-		System.out.println("Arvorezita:\n" + arvore + "\n");
 		System.out.println("Transformando em ArrayList: " + arvore.toArrayList());
 	}
 	

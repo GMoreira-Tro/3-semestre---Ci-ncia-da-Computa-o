@@ -29,25 +29,32 @@ public class Main {
 					/* Insert */
 					case 'i':
 						try {
-							System.out.println("Inserindo " + param);
 							arvore.insert(intParam);
-							System.out.println("Número elementos árvore: " + arvore.numElements + "\n");
-						} catch (DuplicatedKeyException e) {
-							System.out.println("Tentativa de inserção duplicada\n");
-						}
+						} catch (DuplicatedKeyException e) {}
+						System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
 						
+						System.out.println("Inserindo " + param);
+						System.out.println("Número elementos árvore:" + arvore.numElements);
 						break;
 					/* Search */
 					case 'b':
-						System.out.println("Buscando o elemento: " + param + " ...");
-						System.out.println("Existe " + param + "? " + arvore.binarySearch(intParam) + "\n");
+						System.out.println("\nBuscando o elemento: " + param + " ...");
+						System.out.println("Existe " + param + " ? " + arvore.binarySearch(intParam));
+						System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
+						
+						System.out.println("Existe " + param + "? " + arvore.binarySearch(intParam));
 						break;
 					/* Remove */
 					case 'r':
-						
-						System.out.println("Tentando remover o elemento: " + param + " ...");
 						arvore.remove(intParam);
-						System.out.println("Número elementos árvore:" + arvore.numElements + "\n");
+						
+						System.out.println("\nTentando remover o elemento: " + param + " ...");
+						System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
+						
+						wr.write("Removendo " + param);
+						fw.write("\n");
+						wr.write("Número elementos árvore:" + arvore.numElements);
+						fw.write("\n");
 						break;
 					}					
 				}
@@ -55,6 +62,7 @@ public class Main {
 				line = in.readLine();
 			}
 			in.close();
+			fw.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Arquivo \""+file+"\" não existe.");
 		} catch (IOException e) {
@@ -104,8 +112,7 @@ public class Main {
 			
 		} while(!op.toLowerCase().equals("s"));*/
 		
-		System.out.println("Arvorezita:\n" + arvore + "\n");
-		System.out.println("Transformando em ArrayList: " + arvore.toArrayList());
+		System.out.println("\nTransformando em ArrayList: " + arvore.toArrayList());
 	}
 	
 	private static boolean validaParam(String param) {

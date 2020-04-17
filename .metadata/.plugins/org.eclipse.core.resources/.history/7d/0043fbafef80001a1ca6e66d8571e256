@@ -364,14 +364,9 @@ public class AVLTree implements AVLInterface {
 	}
 	
 	public ArrayList<Integer> toArrayList() {
-		try {
 		ArrayList<Integer> list = toArrayList(new ArrayList<Integer>(), root);
 		 list.sort(null);
 		 return list;
-		}
-		catch (NullPointerException e) {
-			return new ArrayList();
-		}
 	}
 	
 	private ArrayList<Integer> toArrayList(ArrayList<Integer> list, BSTNode<Integer> referenceNode){
