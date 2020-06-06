@@ -1,3 +1,0 @@
-INDEX VERSION 1.131+C:\Users\Usuário\Desktop\Pasta importante\!Programação\Java\3 - Árvore e Ordenação (3º semestre)\3-semestre---Ci-ncia-da-Computa-o\.metadata\.plugins\org.eclipse.jdt.core
-1481536479.index
-1671692264.index
