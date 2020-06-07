@@ -61,49 +61,6 @@ public class Main {
 			System.out.println("Erro na leitura de " + file+".");
 		}
 			
-		/* Leitura de valores do teclado para os comandos */
-		
-		/*do {
-			switch(op.toLowerCase()) {
-			case "i":
-				System.out.print("Digite o número que deseja inserir: ");
-				param = Integer.parseInt(s.nextLine());
-				
-				try {
-					arvore.insert(param);
-				} catch (DuplicatedKeyException e) {}
-				
-				break;
-			case "b":
-				System.out.print("Digite o número que deseja buscar: ");
-				param = Integer.parseInt(s.nextLine());
-				
-				System.out.println("\nBuscando o elemento: " + param + " ...");
-				System.out.println("Existe " + param + " ? " + arvore.binarySearch(param));
-				break;
-			case "r":	
-				System.out.print("Digite o número que deseja remover: ");
-				param = Integer.parseInt(s.nextLine());
-				
-				System.out.println("\nTentando remover o elemento: " + param + " ...");
-				arvore.remove(param);
-				break;
-			default:
-				break;	
-			}
-			System.out.println("\n" + arvore + "\n\nNúmero de elementos: " + arvore.numElements);
-			System.out.print("\n+------------+"
-						  + "\n+    Menu    +"
-						  + "\n- i: inserção"
-						  + "\n- b: busca"
-						  + "\n- r: remoção"
-						  + "\n- s: sair"
-						  + "\n: ");
-		
-			op = s.nextLine();	
-			
-		} while(!op.toLowerCase().equals("s"));*/
-		
 		System.out.println("Arvorezita:\n" + arvore + "\n");
 		System.out.println("Transformando em ArrayList: " + arvore.toArrayList());
 	}
@@ -115,6 +72,65 @@ public class Main {
 	        return false;
 	    }
 		return true;
+	}
+	
+	private static boolean validaCPF(long cpf) {
+		return String.valueOf(cpf).length() == 11;
+	}
+	
+	private static boolean validaRG(long rg) {
+		return String.valueOf(rg).length() == 9;
+	}
+	
+	private static boolean validaData(String data) {
+		String[] calendar = data.split("/");
+		
+		if (calendar.length != 3) {
+			return false;
+		}
+		
+		try {
+			int year = Integer.parseInt(calendar[2]);
+			if (year > 9999 || year < 1000) {
+				return false;
+			}
+			
+			int month = Integer.parseInt(calendar[1]);
+			if (month > 12 || month < 1) {
+				return false;
+			}
+			
+			int day = Integer.parseInt(calendar[0]);
+			if (day > 31 || day < 1) {
+				return false;
+			}
+			else if (day == 31) {
+				if(month < 8) {
+					if (month % 2 == 0) {
+						return false;
+					}
+				}
+				else {
+					if (month % 2 == 1) {
+						return false;
+					}
+				}
+			}
+			else if (day == 29 && month == 2) {
+				if (!ehAnoBissexto(year)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		catch (Exception e) {
+			return false;
+		}
+		
+	}
+	
+	private static boolean ehAnoBissexto(int ano) {
+		return (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0));
 	}
 }
 
