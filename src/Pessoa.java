@@ -1,12 +1,13 @@
+import java.util.Date;
 
 public class Pessoa {
 	protected String nome;
 	protected long cpf;
 	protected long rg;
-	protected String dataNascimento;
+	protected Date dataNascimento;
 	protected String cidade;
 	
-	public Pessoa(String nome, long cpf, long rg, String dataNascimento, String cidade) {
+	public Pessoa(String nome, long cpf, long rg, Date dataNascimento, String cidade) {
 		this.nome = nome;
 		this.cpf = cpf;
 		this.rg = rg;
@@ -38,11 +39,11 @@ public class Pessoa {
 		this.rg = rg;
 	}
 
-	public String getDataNascimento() {
+	public Date getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(String dataNascimento) {
+	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 

@@ -1,12 +1,25 @@
 import java.util.ArrayList;
 
+interface DelegatedCompareTo<T> {
+	int compareTo(Comparable<T> element, Object other);
+}
 public class AVLTree<T> implements AVLInterface<T> {
 	BSTNode<T> root;
 	int numElements;
+	DelegatedCompareTo<T> delegate;
 	
 	public AVLTree() {
 		root = null;
 		numElements = 0;
+		delegate = (Comparable<T> element, Object other) -> {
+			return element.compareTo((T) other);
+		};
+	}
+	
+	public AVLTree(DelegatedCompareTo<T> delegate) {
+		root = null;
+		numElements = 0;
+		this.delegate = delegate;
 	}
 	
 	public int numElements() {
@@ -30,7 +43,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 	}
 	
 	private void insert(BSTNode<T> newNode, BSTNode<T> referenceNode) throws DuplicatedKeyException {
-		if(newNode.compareTo(referenceNode.getElement()) > 0) {
+		if(delegate.compareTo(newNode,referenceNode.getElement()) > 0) {
 			if(referenceNode.getRight() == null) {
 				referenceNode.setRight(newNode);
 				newNode.setFather(referenceNode);
@@ -40,7 +53,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 				insert(newNode,referenceNode.getRight());
 			}
 		}
-		else if (newNode.compareTo(referenceNode.getElement()) < 0){
+		else if (delegate.compareTo(newNode,referenceNode.getElement()) < 0){
 			if(referenceNode.getLeft() == null) {
 				referenceNode.setLeft(newNode);
 				newNode.setFather(referenceNode);
@@ -221,9 +234,9 @@ public class AVLTree<T> implements AVLInterface<T> {
 	
 	private boolean binarySearch(Comparable<T> element, BSTNode<T> referenceNode) {
 		do {
-			if (element.compareTo(referenceNode.getElement()) == 0)
+			if (delegate.compareTo(element,referenceNode.getElement()) == 0)
 				return true;
-			else if (element.compareTo(referenceNode.getElement()) > 0)
+			else if (delegate.compareTo(element,referenceNode.getElement()) > 0)
 				referenceNode = referenceNode.getRight();
 			else
 				referenceNode = referenceNode.getLeft();
@@ -232,12 +245,29 @@ public class AVLTree<T> implements AVLInterface<T> {
 		return false;
 	}
 	
+	public Comparable<T> binarySearchElement(Comparable<T> element) {
+		return binarySearchElement(element, root);
+	}
+	
+	private Comparable<T> binarySearchElement(Comparable<T> element, BSTNode<T> referenceNode) {
+		do {
+			if (delegate.compareTo(element,referenceNode.getElement()) == 0)
+				return element;
+			else if (delegate.compareTo(element,referenceNode.getElement()) > 0)
+				referenceNode = referenceNode.getRight();
+			else
+				referenceNode = referenceNode.getLeft();
+		} while (referenceNode != null);
+		
+		return null;
+	}
+	
 	private BSTNode<T> binarySearchNode(Comparable<T> element, BSTNode<T> referenceNode) {
 		
 		do {
-			if (element.compareTo(referenceNode.getElement()) == 0)
+			if (delegate.compareTo(element,referenceNode.getElement()) == 0)
 				return referenceNode;
-			else if (element.compareTo(referenceNode.getElement()) > 0)
+			else if (delegate.compareTo(element,referenceNode.getElement()) > 0)
 				referenceNode = referenceNode.getRight();
 			else
 				referenceNode = referenceNode.getLeft();
