@@ -62,8 +62,9 @@ public class Main {
 				arvoreDatas.insertButCanDuplicateKeys(p);
 			}
 			catch(DuplicatedKeyException e) {}
-		}
+		} 
 		
+		System.out.println(arvoreCpf.toArrayList() + "\n");
 		while(op != '4') {
 		
 			System.out.print(

@@ -33,6 +33,10 @@ public class PessoaDAO {
 						
 						if(pessoa != null) listaPessoas.add(pessoa);
 					}
+					
+					else {
+						System.out.println("Cpf ou Rg duplicados!\n");
+					}
 					/*else if(setRg.contains(rg) && !setCpf.contains(cpf)) {
 						for (Pessoa p : listaPessoas) {
 							if (String.valueOf(p.rg).equals(rg)) {

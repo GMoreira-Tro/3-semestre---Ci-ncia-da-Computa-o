@@ -512,7 +512,10 @@ public class AVLTree<T> implements AVLInterface<T> {
 	public ArrayList<T> toArrayList() {
 		try {
 		ArrayList<T> list = toArrayList(new ArrayList<T>(), root);
-		 list.sort(null);
+		try {
+			list.sort(null);
+		}
+		catch(ClassCastException e) {}
 		 return list;
 		}
 		catch (NullPointerException e) {
