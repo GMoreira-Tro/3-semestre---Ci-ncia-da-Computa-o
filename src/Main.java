@@ -1,4 +1,6 @@
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +14,7 @@ public class Main {
 	private static JFrame frame;
 	private static Scanner s = new Scanner(System.in);
 
-	public static void main(String[] args) throws DuplicatedKeyException {
+	public static void main(String[] args) throws DuplicatedKeyException, ParseException {
 		File file;
 		
 		 JFileChooser chooser = new JFileChooser();
@@ -87,6 +89,7 @@ public class Main {
 				break;
 			
 			case '3':
+				consultaPorDataDeNascimento(arvoreDatas);
 				break;
 			
 			default:
@@ -124,7 +127,7 @@ public class Main {
 	
 	private static void consultaPorNomes(AVLTree<Pessoa> arvore) {
 		while(true) {
-			System.out.println(arvore);
+			//System.out.println(arvore);
 			try {
 				System.out.println("\nInforme o começo do nome das pessoas: ");
 				String start = s.nextLine();
@@ -146,6 +149,40 @@ public class Main {
 		catch (StringIndexOutOfBoundsException e) {
 			
 			}
+		}
+	}
+	
+	private static void consultaPorDataDeNascimento(AVLTree<Pessoa> arvore) throws ParseException {
+		try {
+			System.out.print("\nInforme a data de início: ");
+			String dataInicioS = s.nextLine();
+			
+			if(!PessoaDAO.validaData(dataInicioS))
+				throw new IllegalArgumentException();
+			
+			System.out.print("\nInforme a data de término: ");
+			String dataTerminoS = s.nextLine();
+			if(!PessoaDAO.validaData(dataTerminoS))
+				throw new IllegalArgumentException();
+			
+			Date dataInicio = PessoaDAO.formataData(dataInicioS);
+			Date dataTermino = PessoaDAO.formataData(dataTerminoS);
+			
+			if(dataTermino.compareTo(dataInicio) <= 0)
+				throw new IllegalArgumentException();
+			
+			ArrayList<Pessoa> al = arvore.toArrayList( (element) -> {
+				return (((Pessoa)element).dataNascimento);}, dataInicio, dataTermino);
+				 
+				for (Pessoa pessoa : al) {
+					System.out.println("\n" + pessoa + "\n");
+				}
+				
+				if(al.isEmpty())
+					System.out.println("\nNenhuma pessoa encontrada!"); 
+		}
+		catch(IllegalArgumentException e) {
+			System.out.println("\nData inválida!");
 		}
 	}
 }

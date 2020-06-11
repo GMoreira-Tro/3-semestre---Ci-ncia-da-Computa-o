@@ -547,7 +547,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 			DelegatedString<T> delegate, String string) {
 		
 		String referenceString = delegate.delegatedString(referenceNode.getElement());
-		System.out.println(referenceString);
+		//System.out.println(referenceString);
 		int compareInt = referenceString.compareTo(string);
 		
 		boolean startWith = referenceString.startsWith(string);
@@ -584,22 +584,18 @@ public class AVLTree<T> implements AVLInterface<T> {
 			DelegatedDate<T> delegate, Date startDate, Date endDate) {
 		
 		Date referenceDate = delegate.delegatedDate(referenceNode.getElement());
+		//System.out.println(referenceDate);
 		
-		if (endDate.compareTo(startDate) <= 0)
-			throw new IllegalArgumentException();
+		if (referenceDate.compareTo(startDate) > 0 && referenceDate.compareTo(endDate) < 0) {
+			list.add(referenceNode.getElement());
+		}
 		
-		while (referenceNode != null) {
-			
-			if (referenceDate.compareTo(startDate) > 0 && referenceDate.compareTo(endDate) < 0) {
-				list.add(referenceNode.getElement());
-			}
-			
-			if (referenceDate.compareTo(startDate) >= 0) {
-				referenceNode = referenceNode.getRight();
-			}
-			else {
-				referenceNode = referenceNode.getLeft();
-			}
+		if (referenceNode.getLeft() != null && referenceDate.compareTo(startDate) >= 0) {	
+			 toArrayList(list,referenceNode.getLeft(), delegate, startDate, endDate);
+		}
+		
+		if (referenceNode.getRight() != null && referenceDate.compareTo(endDate) <= 0) {
+			toArrayList(list,referenceNode.getRight(), delegate, startDate, endDate);
 		} 
 		
 		return list;

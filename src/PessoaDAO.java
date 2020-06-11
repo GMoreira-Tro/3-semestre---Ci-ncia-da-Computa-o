@@ -6,6 +6,8 @@ public class PessoaDAO {
 
 	public static List<Pessoa> buscaPessoas(File file) {
 		List<Pessoa> listaPessoas = new ArrayList();
+		Set<String> setRg = new HashSet();
+		Set<String> setCpf = new HashSet();
 		
 		try {
 			FileReader fr = new FileReader(file);
@@ -23,9 +25,30 @@ public class PessoaDAO {
 					String dataNascimento = info[3];
 					String cidade = info[4];
 					
-					Pessoa pessoa = criaPessoa(nome, cpf, rg, dataNascimento, cidade);
-					
-					if(pessoa != null) listaPessoas.add(pessoa);
+					if(!setRg.contains(rg) && !setCpf.contains(cpf)) {
+						setRg.add(rg);
+						setCpf.add(cpf);
+						
+						Pessoa pessoa = criaPessoa(nome, cpf, rg, dataNascimento, cidade);
+						
+						if(pessoa != null) listaPessoas.add(pessoa);
+					}
+					/*else if(setRg.contains(rg) && !setCpf.contains(cpf)) {
+						for (Pessoa p : listaPessoas) {
+							if (String.valueOf(p.rg).equals(rg)) {
+								listaPessoas.remove(p);
+								break;
+							}
+						}
+					}
+					else {
+						for (Pessoa p : listaPessoas) {
+							if (String.valueOf(p.cpf).equals(cpf)) {
+								listaPessoas.remove(p);
+								break;
+							}
+						}
+					}*/
 				}
 				line = in.readLine();
 			}
@@ -127,7 +150,7 @@ public class PessoaDAO {
 		}
 		
 	}
-	public static java.sql.Date formataData(String data) throws Exception { 
+	public static java.sql.Date formataData(String data) throws ParseException { 
  		if (data == null || data.equals(""))
  			return null;
  		
