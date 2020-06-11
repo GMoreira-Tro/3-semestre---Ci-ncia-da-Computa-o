@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PessoaDAO {
 
-	public List<Pessoa> buscaPessoas(File file) {
+	public static List<Pessoa> buscaPessoas(File file) {
 		List<Pessoa> listaPessoas = new ArrayList();
 		
 		try {
@@ -39,7 +39,7 @@ public class PessoaDAO {
 		return listaPessoas;
 	}
 	
-	private Pessoa criaPessoa(String nome, String cpf, String rg, String dataNascimento, String cidade) {
+	public static Pessoa criaPessoa(String nome, String cpf, String rg, String dataNascimento, String cidade) {
 		
 		if(!validaParamLong(cpf) || !validaParamLong(rg)) return null;
 		
@@ -60,7 +60,7 @@ public class PessoaDAO {
 	}
 	
 	/* Validação dos dados */
-	private static boolean validaParamLong(String param) {
+	public static boolean validaParamLong(String param) {
 		try {
 	        long i = Long.parseLong(param);
 	    } catch (NumberFormatException nfe) {
@@ -68,16 +68,20 @@ public class PessoaDAO {
 	    }
 		return true;
 	}
-	private static boolean validaCPF(long cpf) {
+	public static boolean validaCPF(long cpf) {
+		if (cpf < 0)
+			return false;
 		return String.valueOf(cpf).length() == 11;
 	}
 
 	
 	/* Revisar validação do RG*/
-	private static boolean validaRG(long rg) {
+	public static boolean validaRG(long rg) {
+		if (rg < 0)
+			return false;
 		return String.valueOf(rg).length() == 9;
 	}
-	private static boolean validaData(String data) {
+	public static boolean validaData(String data) {
 		String[] calendar = data.split("/");
 		
 		if (calendar.length != 3) {
@@ -123,7 +127,7 @@ public class PessoaDAO {
 		}
 		
 	}
-	private static java.sql.Date formataData(String data) throws Exception { 
+	public static java.sql.Date formataData(String data) throws Exception { 
  		if (data == null || data.equals(""))
  			return null;
  		
@@ -136,7 +140,7 @@ public class PessoaDAO {
          }
          return date;
  	}
-	private static boolean ehAnoBissexto(int ano) {
+	public static boolean ehAnoBissexto(int ano) {
 		return (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0));
 	}
 }

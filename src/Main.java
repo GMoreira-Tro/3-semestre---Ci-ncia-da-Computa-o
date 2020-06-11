@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -9,10 +10,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Main {
 	
 	private static JFrame frame;
+	private static Scanner s = new Scanner(System.in);
 
 	public static void main(String[] args) throws DuplicatedKeyException {
-		Scanner s = new Scanner(System.in);
-		
 		File file;
 		
 		 JFileChooser chooser = new JFileChooser();
@@ -35,7 +35,7 @@ public class Main {
 		
 		/* Arvore Nomes */
 		AVLTree<Pessoa> arvoreNomes = new AVLTree( (element,  other) -> {
-			return ((Pessoa)element).nome.compareTo(((Pessoa)other).nome);
+			return (((Pessoa)element).nome.compareTo(((Pessoa)other).nome));
 		});
 
 		/* Arvore CPF */
@@ -50,7 +50,7 @@ public class Main {
 		
 		/* Arvore Data */
 		AVLTree<Pessoa> arvoreDatas = new AVLTree( (element, other) -> {
-			return ((Pessoa)element).dataNascimento.compareTo(((Pessoa)other).dataNascimento);
+			return (((Pessoa)element).dataNascimento.compareTo(((Pessoa)other).dataNascimento));
 		});
 		
 		for(Pessoa p : listaPessoas) {	
@@ -62,10 +62,10 @@ public class Main {
 			catch(DuplicatedKeyException e) {}
 		}
 		
-		while(op != 9) {
+		while(op != '4') {
 		
-			System.out.print("Menu"
-					+ "\n1. Consultar por CPF"
+			System.out.print(
+					"1. Consultar por CPF"
 					+ "\n2. Consultar pelo nome"
 					+ "\n3. Consultar pela data de nascimento"
 					+ "\n4. Sair"
@@ -79,19 +79,73 @@ public class Main {
 			
 			switch(op) {
 			case '1':
+				consultaPorCpf(arvoreCpf);
 				break;
 			
 			case '2':
+				consultaPorNomes(arvoreNomes);
 				break;
 			
 			case '3':
 				break;
 			
 			default:
-				System.out.println("");
+				System.out.println();
 				break;
 				
 			}
 		}	
-	}		
+	}
+	
+	private static void consultaPorCpf(AVLTree<Pessoa> arvore) {
+		try {
+			System.out.print("\nInforme o CPF a ser pesquisado: ");
+			long cpf = Long.parseLong(s.nextLine());
+			if (!PessoaDAO.validaCPF(cpf))
+				throw new NumberFormatException();
+			
+			DelegatedAttribute delegate = ( (element) -> {
+				return (((Pessoa)element).cpf);
+			});
+			Pessoa p = arvore.binarySearchElementByAttribute(cpf, delegate);
+			
+			if(p != null) {
+				System.out.println("\n" + p + "\n");
+			}
+			else {
+				System.out.println("\nPessoa não encontrada!");
+			}
+			
+		}
+		catch(NumberFormatException e) {
+			System.out.println("\nCPF inválido!");
+		}
+	}
+	
+	private static void consultaPorNomes(AVLTree<Pessoa> arvore) {
+		while(true) {
+			System.out.println(arvore);
+			try {
+				System.out.println("\nInforme o começo do nome das pessoas: ");
+				String start = s.nextLine();
+				if(start.length() == 0)
+					throw new StringIndexOutOfBoundsException();
+				
+				ArrayList<Pessoa> al = arvore.toArrayList( (element) -> {
+				return (((Pessoa)element).nome);}, start);
+				 
+				for (Pessoa pessoa : al) {
+					System.out.println("\n" + pessoa + "\n");
+				}
+				
+				if(al.isEmpty())
+					System.out.println("\nNenhuma pessoa encontrada!");
+				
+				break;
+			}
+		catch (StringIndexOutOfBoundsException e) {
+			
+			}
+		}
+	}
 }

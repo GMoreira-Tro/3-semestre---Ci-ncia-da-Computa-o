@@ -57,7 +57,7 @@ public class Pessoa {
 
 	@Override
 	public String toString() {
-		return "\nNome: " + this.nome +
+		return "Nome: " + this.nome +
 				"\nCpf: " + this.cpf +
 				"\nRg: " + this.rg +
 				"\nData de nascimento: " + this.dataNascimento +

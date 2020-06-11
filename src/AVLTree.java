@@ -13,6 +13,10 @@ interface DelegatedDate<T> {
 	Date delegatedDate(T element);
 }
 
+interface DelegatedAttribute<T, E> {
+	Comparable<E> delegatedAttribute(T element);
+}
+
 public class AVLTree<T> implements AVLInterface<T> {
 	BSTNode<T> root;
 	int numElements;
@@ -307,7 +311,44 @@ public class AVLTree<T> implements AVLInterface<T> {
 		return null;
 	}
 	
-	private BSTNode<T> binarySearchNode(Comparable<T> element, BSTNode<T> referenceNode) {
+	public <E> boolean binarySearchByAttribute(E element, DelegatedAttribute<T, E> del) {
+		return binarySearchByAttribute(element, root, del);
+	}
+	
+	private <E> boolean binarySearchByAttribute(E element, BSTNode<T> referenceNode,
+			DelegatedAttribute<T, E> del) {
+		do {
+			if (del.delegatedAttribute(referenceNode.getElement()).compareTo(element) == 0)
+				return true;
+			else if (del.delegatedAttribute(referenceNode.getElement()).compareTo(element) < 0)
+				referenceNode = referenceNode.getRight();
+			else
+				referenceNode = referenceNode.getLeft();
+		} while (referenceNode != null);
+		
+		return false;
+	}
+	
+	public <E> T binarySearchElementByAttribute(E element, DelegatedAttribute<T, E> del) {
+		return binarySearchElementByAttribute(element, root, del);
+	}
+	
+	private <E> T binarySearchElementByAttribute(E element, BSTNode<T> referenceNode
+			, DelegatedAttribute<T, E> del) {
+		do {
+			//System.out.println(del.delegatedAttribute(referenceNode.getElement()));
+			if (del.delegatedAttribute(referenceNode.getElement()).compareTo(element) == 0)
+				return referenceNode.getElement();
+			else if (del.delegatedAttribute(referenceNode.getElement()).compareTo(element) < 0)
+				referenceNode = referenceNode.getRight();
+			else
+				referenceNode = referenceNode.getLeft();
+		} while (referenceNode != null);
+		
+		return null;
+	}
+	
+	private BSTNode<T> binarySearchNode(T element, BSTNode<T> referenceNode) {
 		
 		do {
 			if (delegate.compareTo(element,referenceNode.getElement()) == 0)
@@ -321,13 +362,43 @@ public class AVLTree<T> implements AVLInterface<T> {
 		return null;
 	}
 	
-	public void remove(Comparable<T>element) {
+	private <E> BSTNode<T> binarySearchNodeByAttribute(E element, BSTNode<T> referenceNode,
+			DelegatedAttribute<T, E> del) {
+		
+		do {
+			if (del.delegatedAttribute(referenceNode.getElement()).compareTo(element) == 0)
+				return referenceNode;
+			else if (del.delegatedAttribute(referenceNode.getElement()).compareTo(element) < 0)
+				referenceNode = referenceNode.getRight();
+			else
+				referenceNode = referenceNode.getLeft();
+		} while (referenceNode != null);
+		
+		return null;
+	}
+	
+	public void remove(T element) {
 		BSTNode<T> node;
 		
 		if(isEmpty())
 			node = null;
 		else
 			node = binarySearchNode(element, root);
+		if(node != null) {
+			removeNode(node);
+			numElements--;
+		}
+		else
+			System.out.println("Element not found!");
+	}
+	
+	public <E> void removeByAttribute(E element, DelegatedAttribute<T, E> del) {
+		BSTNode<T> node;
+		
+		if(isEmpty())
+			node = null;
+		else
+			node = binarySearchNodeByAttribute(element, root, del);
 		if(node != null) {
 			removeNode(node);
 			numElements--;
@@ -476,19 +547,25 @@ public class AVLTree<T> implements AVLInterface<T> {
 			DelegatedString<T> delegate, String string) {
 		
 		String referenceString = delegate.delegatedString(referenceNode.getElement());
-		do {
+		System.out.println(referenceString);
+		int compareInt = referenceString.compareTo(string);
+		
+		boolean startWith = referenceString.startsWith(string);
+		if (startWith) {
+			list.add(referenceNode.getElement());
+		}
 			
-			if (referenceString.startsWith(string)) {
-				list.add(referenceNode.getElement());
+		if (referenceNode.getLeft() != null) {
+			if(referenceString.compareTo(string) > 0) {
+				toArrayList(list,referenceNode.getLeft(),delegate,string);
 			}
-			
-			if (referenceString.compareTo(string) >= 0) {
-				referenceNode = referenceNode.getRight();
+		}
+		
+		if (referenceNode.getRight() != null) {
+			if (startWith || compareInt < 0) {
+				 toArrayList(list,referenceNode.getRight(), delegate, string);
 			}
-			else {
-				referenceNode = referenceNode.getLeft();
-			}
-		} while (referenceNode != null);
+		}
 		
 		return list;
 	}
