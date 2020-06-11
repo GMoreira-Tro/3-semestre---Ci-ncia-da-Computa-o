@@ -1,157 +1,97 @@
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 public class Main {
+	
+	private static JFrame frame;
 
 	public static void main(String[] args) throws DuplicatedKeyException {
 		Scanner s = new Scanner(System.in);
-		File file = new File("logArvore.txt");
 		
-		DelegatedCompareTo<Pessoa> delegate;
-		delegate = (Comparable<Pessoa> element, Object other) -> {
+		File file;
+		
+		 JFileChooser chooser = new JFileChooser();
+	     FileNameExtensionFilter ext = new FileNameExtensionFilter(
+	                "Text", "txt", "csv");
+	     chooser.setFileFilter(ext);
+	        
+	     int returnVal = chooser.showOpenDialog(frame);
+	     if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    	 file = new File(chooser.getSelectedFile().getAbsolutePath());
+	    	 System.out.println(file);
+	      }
+	     else {
+	    	 file = new File("logArvore.txt");
+	    }
+	
+		char op = '0';
+		
+		List<Pessoa> listaPessoas = new PessoaDAO().buscaPessoas(file);		
+		
+		/* Arvore Nomes */
+		AVLTree<Pessoa> arvoreNomes = new AVLTree( (element,  other) -> {
 			return ((Pessoa)element).nome.compareTo(((Pessoa)other).nome);
-		};
-		
-		AVLTree<String> arvoreNomes = new AVLTree(delegate);
-		delegate = (Comparable<Pessoa> element, Object other) -> {
+		});
+
+		/* Arvore CPF */
+		AVLTree<Pessoa> arvoreCpf = new AVLTree( (element, other) -> {
 			if (((Pessoa)element).cpf > ((Pessoa)other).cpf)
 				return 1;
 			else if (((Pessoa)element).cpf == ((Pessoa)other).cpf)
 				return 0;
 			else 
 				return -1;
-		};
-		AVLTree<Long> arvoreCpf = new AVLTree(delegate);
-		delegate = (Comparable<Pessoa> element, Object other) -> {
+		});
+		
+		/* Arvore Data */
+		AVLTree<Pessoa> arvoreDatas = new AVLTree( (element, other) -> {
 			return ((Pessoa)element).dataNascimento.compareTo(((Pessoa)other).dataNascimento);
-		};
-		AVLTree<Date> arvoreDatas = new AVLTree(delegate);
+		});
 		
-		char op;
-		String param;
-		
-		try {
-			FileReader fr = new FileReader(file);
-			BufferedReader in = new BufferedReader(fr);
-			String line = in.readLine();
-			
-			in.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("Arquivo \""+file+"\" não existe.");
-		} catch (IOException e) {
-			System.out.println("Erro na leitura de " + file+".");
+		for(Pessoa p : listaPessoas) {	
+			try {
+				arvoreCpf.insert(p);
+				arvoreNomes.insertButCanDuplicateKeys(p);
+				arvoreDatas.insertButCanDuplicateKeys(p);
+			}
+			catch(DuplicatedKeyException e) {}
 		}
-	}
-	
-	
-	private static void metodoDoGrauA(String line, char op, String param, AVLTree<Integer> arvore,
-			BufferedReader in) throws IOException {
-		while (line != null) {
-			/* Lê comando e parâmetro */
-			op = line.charAt(0);
-			param = line.substring(1, line.length());
-			
-			/* Valida o parâmetro e executa o comando correspondente */
-			if(validaParam(param)) {
-				int intParam = Integer.parseInt(param);
+		
+		while(op != 9) {
+		
+			System.out.print("Menu"
+					+ "\n1. Consultar por CPF"
+					+ "\n2. Consultar pelo nome"
+					+ "\n3. Consultar pela data de nascimento"
+					+ "\n4. Sair"
+					+ "\n: ");
+		
+			try {
+				op = (s.nextLine().charAt(0));
+			} catch (Exception e) {
 				
-				switch(op) {
-				/* Insert */
-				case 'i':
-					try {
-						System.out.println("Inserindo " + param);
-						arvore.insert(intParam);
-						System.out.println("Número elementos árvore: " + arvore.numElements + "\n");
-					} catch (DuplicatedKeyException e) {
-						System.out.println("Tentativa de inserção duplicada\n");
-					}
-					
-					break;
-				/* Search */
-				case 'b':
-					System.out.println("Buscando o elemento: " + param + " ...");
-					System.out.println("Existe " + param + "? " + arvore.binarySearch(intParam) + "\n");
-					break;
-				/* Remove */
-				case 'r':
-					
-					System.out.println("Tentando remover o elemento: " + param + " ...");
-					arvore.remove(intParam);
-					System.out.println("Número elementos árvore:" + arvore.numElements + "\n");
-					break;
-				}					
 			}
 			
-			line = in.readLine();
-		}
-	}
-	private static boolean validaParam(String param) {
-		try {
-	        int i = Integer.parseInt(param);
-	    } catch (NumberFormatException nfe) {
-	        return false;
-	    }
-		return true;
-	}
-	
-	private static boolean validaCPF(long cpf) {
-		return String.valueOf(cpf).length() == 11;
-	}
-	
-	private static boolean validaRG(long rg) {
-		return String.valueOf(rg).length() == 9;
-	}
-	
-	private static boolean validaData(String data) {
-		String[] calendar = data.split("/");
-		
-		if (calendar.length != 3) {
-			return false;
-		}
-		
-		try {
-			int year = Integer.parseInt(calendar[2]);
-			if (year > 9999 || year < 1000) {
-				return false;
-			}
+			switch(op) {
+			case '1':
+				break;
 			
-			int month = Integer.parseInt(calendar[1]);
-			if (month > 12 || month < 1) {
-				return false;
-			}
+			case '2':
+				break;
 			
-			int day = Integer.parseInt(calendar[0]);
-			if (day > 31 || day < 1) {
-				return false;
+			case '3':
+				break;
+			
+			default:
+				System.out.println("");
+				break;
+				
 			}
-			else if (day == 31) {
-				if(month < 8) {
-					if (month % 2 == 0) {
-						return false;
-					}
-				}
-				else {
-					if (month % 2 == 1) {
-						return false;
-					}
-				}
-			}
-			else if (day == 29 && month == 2) {
-				if (!ehAnoBissexto(year)) {
-					return false;
-				}
-			}
-			return true;
-		}
-		catch (Exception e) {
-			return false;
-		}
-		
-	}
-	
-	private static boolean ehAnoBissexto(int ano) {
-		return (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0));
-	}
+		}	
+	}		
 }
-

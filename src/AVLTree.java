@@ -1,8 +1,18 @@
 import java.util.ArrayList;
+import java.util.Date;
 
 interface DelegatedCompareTo<T> {
-	int compareTo(Comparable<T> element, Object other);
+	int compareTo(Object element, Object other);
 }
+
+interface DelegatedString<T> {
+	String delegatedString(T element); 
+}
+
+interface DelegatedDate<T> {
+	Date delegatedDate(T element);
+}
+
 public class AVLTree<T> implements AVLInterface<T> {
 	BSTNode<T> root;
 	int numElements;
@@ -11,8 +21,8 @@ public class AVLTree<T> implements AVLInterface<T> {
 	public AVLTree() {
 		root = null;
 		numElements = 0;
-		delegate = (Comparable<T> element, Object other) -> {
-			return element.compareTo((T) other);
+		delegate = (Object element, Object other) -> {
+			return ((Comparable<T>)element).compareTo((T) other);
 		};
 	}
 	
@@ -43,7 +53,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 	}
 	
 	private void insert(BSTNode<T> newNode, BSTNode<T> referenceNode) throws DuplicatedKeyException {
-		if(delegate.compareTo(newNode,referenceNode.getElement()) > 0) {
+		if(delegate.compareTo((Object)newNode.getElement(),referenceNode.getElement()) > 0) {
 			if(referenceNode.getRight() == null) {
 				referenceNode.setRight(newNode);
 				newNode.setFather(referenceNode);
@@ -53,7 +63,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 				insert(newNode,referenceNode.getRight());
 			}
 		}
-		else if (delegate.compareTo(newNode,referenceNode.getElement()) < 0){
+		else if (delegate.compareTo((Object)newNode.getElement(),referenceNode.getElement()) < 0){
 			if(referenceNode.getLeft() == null) {
 				referenceNode.setLeft(newNode);
 				newNode.setFather(referenceNode);
@@ -65,6 +75,41 @@ public class AVLTree<T> implements AVLInterface<T> {
 		}
 		else
 			throw new DuplicatedKeyException();
+	}
+	
+	public void insertButCanDuplicateKeys(T element) {
+		BSTNode<T> newNode = new BSTNode<T>(element);
+		
+		if(isEmpty()) {
+			root = newNode;
+		}
+		else {
+			insertButCanDuplicateKeys(newNode, root);		
+		}
+		numElements++;
+	}
+	
+	private void insertButCanDuplicateKeys(BSTNode<T> newNode, BSTNode<T> referenceNode) {
+		if(delegate.compareTo((Object)newNode.getElement(),referenceNode.getElement()) >= 0) {
+			if(referenceNode.getRight() == null) {
+				referenceNode.setRight(newNode);
+				newNode.setFather(referenceNode);
+				verifyBalance(referenceNode);
+			}
+			else {
+				insertButCanDuplicateKeys(newNode,referenceNode.getRight());
+			}
+		}
+		else {
+			if(referenceNode.getLeft() == null) {
+				referenceNode.setLeft(newNode);
+				newNode.setFather(referenceNode);
+				verifyBalance(referenceNode);
+			}
+			else {
+				insertButCanDuplicateKeys(newNode,referenceNode.getLeft());
+			}
+		}
 	}
 	
 	public void verifyBalance(BSTNode<T> referenceNode) {
@@ -415,5 +460,71 @@ public class AVLTree<T> implements AVLInterface<T> {
 			toArrayList(list,referenceNode.getRight());
 		}
 			return list;
+	}
+	
+	public ArrayList<T> toArrayList(DelegatedString<T> delegate, String string) {
+		try {
+			ArrayList<T> list = toArrayList(new ArrayList<T>(), root, delegate, string);
+			return list;
+		}
+		catch (NullPointerException e) {
+			return new ArrayList();
+		}
+	}
+	
+	private ArrayList<T> toArrayList(ArrayList<T> list, BSTNode<T> referenceNode, 
+			DelegatedString<T> delegate, String string) {
+		
+		String referenceString = delegate.delegatedString(referenceNode.getElement());
+		do {
+			
+			if (referenceString.startsWith(string)) {
+				list.add(referenceNode.getElement());
+			}
+			
+			if (referenceString.compareTo(string) >= 0) {
+				referenceNode = referenceNode.getRight();
+			}
+			else {
+				referenceNode = referenceNode.getLeft();
+			}
+		} while (referenceNode != null);
+		
+		return list;
+	}
+	
+	public ArrayList<T> toArrayList(DelegatedDate<T> delegate, Date startDate, Date endDate) {
+		try {
+			ArrayList<T> list = toArrayList(new ArrayList<T>(), root, delegate, startDate, endDate);
+			return list;
+		}
+		catch (NullPointerException e) {
+			return new ArrayList();
+		}
+	}
+	
+	private ArrayList<T> toArrayList(ArrayList<T> list, BSTNode<T> referenceNode, 
+			DelegatedDate<T> delegate, Date startDate, Date endDate) {
+		
+		Date referenceDate = delegate.delegatedDate(referenceNode.getElement());
+		
+		if (endDate.compareTo(startDate) <= 0)
+			throw new IllegalArgumentException();
+		
+		while (referenceNode != null) {
+			
+			if (referenceDate.compareTo(startDate) > 0 && referenceDate.compareTo(endDate) < 0) {
+				list.add(referenceNode.getElement());
+			}
+			
+			if (referenceDate.compareTo(startDate) >= 0) {
+				referenceNode = referenceNode.getRight();
+			}
+			else {
+				referenceNode = referenceNode.getLeft();
+			}
+		} 
+		
+		return list;
 	}
 }
