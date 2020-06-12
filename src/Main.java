@@ -1,6 +1,5 @@
 import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,26 +32,26 @@ public class Main {
 	
 		char op = '0';
 		
-		List<Pessoa> listaPessoas = new PessoaDAO().buscaPessoas(file);		
+		List<Pessoa> listaPessoas = PessoaDAO.buscaPessoas(file);		
 		
 		/* Arvore Nomes */
-		AVLTree<Pessoa> arvoreNomes = new AVLTree( (element,  other) -> {
-			return (((Pessoa)element).nome.compareTo(((Pessoa)other).nome));
+		AVLTree<Pessoa> arvoreNomes = new AVLTree<Pessoa>( (element,  other) -> {
+			return (element.nome.compareTo(other.nome));
 		});
 
 		/* Arvore CPF */
-		AVLTree<Pessoa> arvoreCpf = new AVLTree( (element, other) -> {
-			if (((Pessoa)element).cpf > ((Pessoa)other).cpf)
+		AVLTree<Pessoa> arvoreCpf = new AVLTree<Pessoa>( (element, other) -> {
+			if (element.cpf > other.cpf)
 				return 1;
-			else if (((Pessoa)element).cpf == ((Pessoa)other).cpf)
+			else if (element.cpf == other.cpf)
 				return 0;
 			else 
 				return -1;
 		});
 		
 		/* Arvore Data */
-		AVLTree<Pessoa> arvoreDatas = new AVLTree( (element, other) -> {
-			return (((Pessoa)element).dataNascimento.compareTo(((Pessoa)other).dataNascimento));
+		AVLTree<Pessoa> arvoreDatas = new AVLTree<Pessoa>( (element, other) -> {
+			return (element.dataNascimento.compareTo(other.dataNascimento));
 		});
 		
 		for(Pessoa p : listaPessoas) {	
@@ -64,7 +63,10 @@ public class Main {
 			catch(DuplicatedKeyException e) {}
 		} 
 		
-		System.out.println(arvoreCpf.toArrayList() + "\n");
+		for (Pessoa pessoa : listaPessoas) {
+			System.out.println(pessoa + "\n");
+		}
+
 		while(op != '4') {
 		
 			System.out.print(
@@ -107,11 +109,10 @@ public class Main {
 			long cpf = Long.parseLong(s.nextLine());
 			if (!PessoaDAO.validaCPF(cpf))
 				throw new NumberFormatException();
-			
-			DelegatedAttribute delegate = ( (element) -> {
-				return (((Pessoa)element).cpf);
+			 
+			Pessoa p = arvore.binarySearchElementByAttribute(cpf, (element) -> {
+				return (element.cpf);
 			});
-			Pessoa p = arvore.binarySearchElementByAttribute(cpf, delegate);
 			
 			if(p != null) {
 				System.out.println("\n" + p + "\n");
@@ -173,7 +174,7 @@ public class Main {
 				throw new IllegalArgumentException();
 			
 			ArrayList<Pessoa> al = arvore.toArrayList( (element) -> {
-				return (((Pessoa)element).dataNascimento);}, dataInicio, dataTermino);
+				return ((element).dataNascimento);}, dataInicio, dataTermino);
 				 
 				for (Pessoa pessoa : al) {
 					System.out.println("\n" + pessoa + "\n");

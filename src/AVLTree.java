@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 interface DelegatedCompareTo<T> {
-	int compareTo(Object element, Object other);
+	int compareTo(T element, T other);
 }
 
 interface DelegatedString<T> {
@@ -22,11 +22,13 @@ public class AVLTree<T> implements AVLInterface<T> {
 	int numElements;
 	DelegatedCompareTo<T> delegate;
 	
+	@SuppressWarnings("unchecked")
 	public AVLTree() {
 		root = null;
 		numElements = 0;
-		delegate = (Object element, Object other) -> {
-			return ((Comparable<T>)element).compareTo((T) other);
+		
+		delegate = (T element, T other) -> {
+			return ((Comparable<T>)element).compareTo(other);
 		};
 	}
 	
@@ -57,7 +59,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 	}
 	
 	private void insert(BSTNode<T> newNode, BSTNode<T> referenceNode) throws DuplicatedKeyException {
-		if(delegate.compareTo((Object)newNode.getElement(),referenceNode.getElement()) > 0) {
+		if(delegate.compareTo(newNode.getElement(),referenceNode.getElement()) > 0) {
 			if(referenceNode.getRight() == null) {
 				referenceNode.setRight(newNode);
 				newNode.setFather(referenceNode);
@@ -67,7 +69,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 				insert(newNode,referenceNode.getRight());
 			}
 		}
-		else if (delegate.compareTo((Object)newNode.getElement(),referenceNode.getElement()) < 0){
+		else if (delegate.compareTo(newNode.getElement(),referenceNode.getElement()) < 0){
 			if(referenceNode.getLeft() == null) {
 				referenceNode.setLeft(newNode);
 				newNode.setFather(referenceNode);
@@ -94,7 +96,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 	}
 	
 	private void insertButCanDuplicateKeys(BSTNode<T> newNode, BSTNode<T> referenceNode) {
-		if(delegate.compareTo((Object)newNode.getElement(),referenceNode.getElement()) >= 0) {
+		if(delegate.compareTo(newNode.getElement(),referenceNode.getElement()) >= 0) {
 			if(referenceNode.getRight() == null) {
 				referenceNode.setRight(newNode);
 				newNode.setFather(referenceNode);
@@ -277,11 +279,11 @@ public class AVLTree<T> implements AVLInterface<T> {
 		return tabs;
 	}
 	
-	public boolean binarySearch(Comparable<T> element) {
+	public boolean binarySearch(T element) {
 		return binarySearch(element, root);
 	}
 	
-	private boolean binarySearch(Comparable<T> element, BSTNode<T> referenceNode) {
+	private boolean binarySearch(T element, BSTNode<T> referenceNode) {
 		do {
 			if (delegate.compareTo(element,referenceNode.getElement()) == 0)
 				return true;
@@ -294,11 +296,11 @@ public class AVLTree<T> implements AVLInterface<T> {
 		return false;
 	}
 	
-	public Comparable<T> binarySearchElement(Comparable<T> element) {
+	public T binarySearchElement(T element) {
 		return binarySearchElement(element, root);
 	}
 	
-	private Comparable<T> binarySearchElement(Comparable<T> element, BSTNode<T> referenceNode) {
+	private T binarySearchElement(T element, BSTNode<T> referenceNode) {
 		do {
 			if (delegate.compareTo(element,referenceNode.getElement()) == 0)
 				return element;
@@ -519,7 +521,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 		 return list;
 		}
 		catch (NullPointerException e) {
-			return new ArrayList();
+			return new ArrayList<T>();
 		}
 	}
 	
@@ -542,7 +544,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 			return list;
 		}
 		catch (NullPointerException e) {
-			return new ArrayList();
+			return new ArrayList<T>();
 		}
 	}
 	
@@ -579,7 +581,7 @@ public class AVLTree<T> implements AVLInterface<T> {
 			return list;
 		}
 		catch (NullPointerException e) {
-			return new ArrayList();
+			return new ArrayList<T>();
 		}
 	}
 	

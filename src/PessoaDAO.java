@@ -5,9 +5,9 @@ import java.util.*;
 public class PessoaDAO {
 
 	public static List<Pessoa> buscaPessoas(File file) {
-		List<Pessoa> listaPessoas = new ArrayList();
-		Set<String> setRg = new HashSet();
-		Set<String> setCpf = new HashSet();
+		List<Pessoa> listaPessoas = new ArrayList<Pessoa>();
+		Set<String> setRg = new HashSet<String>();
+		Set<String> setCpf = new HashSet<String>();
 		
 		try {
 			FileReader fr = new FileReader(file);
@@ -89,7 +89,7 @@ public class PessoaDAO {
 	/* Validação dos dados */
 	public static boolean validaParamLong(String param) {
 		try {
-	        long i = Long.parseLong(param);
+	        Long.parseLong(param);
 	    } catch (NumberFormatException nfe) {
 	        return false;
 	    }
