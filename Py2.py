@@ -30,17 +30,15 @@ def dateRandom():
   return str(day) + "/" + str(month) + "/" + str(year)
 
 def isLeapYear(year):
-  if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)):
-    return True
-  return False
+  return (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0))
 
 for j in range(10):
     x = ""
     y = ""
     for i in range(11):
-        x += str(random.randint(0,9))
+        x += str(random.randint(1,9))
         if (i < 9):
-            y += str(random.randint(0,9))
+            y += str(random.randint(1,9))
 
     name = nameRandom()
     city = nameRandom()
