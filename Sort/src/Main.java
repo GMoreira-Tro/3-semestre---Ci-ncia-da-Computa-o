@@ -9,7 +9,6 @@ public class Main {
 		
 		long time = System.nanoTime();
 		Sorts.quickSort(list);
-		//list.sort(null);
 		System.out.println(("\n" + (System.nanoTime() - time)/1000000000f));
 		System.out.println("\n" + list);
 		

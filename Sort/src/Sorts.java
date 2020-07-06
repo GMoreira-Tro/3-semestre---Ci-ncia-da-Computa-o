@@ -33,10 +33,48 @@ public class Sorts {
 		return j;
 	}
 	
+	public static <E extends Comparable<E>> void quickSort(E[] array) {
+		quickSort(array, 0, array.length - 1);
+	}
+	
+	private static <E extends Comparable<E>> void quickSort(E[] array, int low, int high) {
+		if(low < high) {
+			int partition = partition(array, low, high);
+			quickSort(array, low, partition-1);
+			quickSort(array, partition+1, high);
+		}
+	}
+	
+	private static <E extends Comparable<E>> int partition(E[] array, int low, int high) {
+		int i = low + 1;
+		int j = high;
+		E pivot = array[low];
+		
+		while(i <= j) {
+			if(array[i].compareTo(pivot) < 0) i++;
+			
+			else if(array[j].compareTo(pivot) > 0) j--;
+			
+			else if(i <= j) {
+				swap(array,i,j);
+				i++;
+				j--;
+			}
+		}
+		swap(array,low,j);
+		return j;
+	}
+	
 	private static <E extends Comparable<E>> void swap(List<E> list, int i, int j) {
 		E aux = list.get(i);
 		list.set(i, list.get(j));
 		list.set(j, aux);
+	}
+	
+	private static <E extends Comparable<E>> void swap(E[] array, int i, int j) {
+		E aux = array[i];
+		array[i] = array[j];
+		array[j] = aux;
 	}
 	
 	public static <E extends Comparable<E>> void insertionSort(List<E> list) {
@@ -55,10 +93,25 @@ public class Sorts {
 		}
 	}
 	
+	public static <E extends Comparable<E>> void insertionSort(E[] array) {
+		E pos;
+		int j;
+		
+		for (int i = 1; i < array.length; i++) {
+			pos = array[i];
+			
+			j = i-1;
+			for(; j >= 0 && array[j].compareTo(pos) > 0; j--) {
+				array[j+1] = array[j];
+			}
+			
+			array[j+1] = pos;
+		}
+	}
+	
 	public static <E extends Comparable<E>> void selectionSort(List<E> list) {
 		int min;
 		int size = list.size()-1;
-		E aux;
 		
 		for (int i = 0; i < size; i++) {
 			min = i;
@@ -67,9 +120,23 @@ public class Sorts {
 					min = j;
 			}
 			if(i != min) {
-				aux = list.get(i);
-				list.set(i, list.get(min));
-				list.set(min, aux);
+				swap(list, i, min);
+			}
+		}
+	}
+	
+	public static <E extends Comparable<E>> void selectionSort(E[] array) {
+		int min;
+		int size = array.length-1;
+		
+		for (int i = 0; i < size; i++) {
+			min = i;
+			for(int j = i+1; j < array.length; j++) {
+				if(array[j].compareTo(array[min]) < 0)
+					min = j;
+			}
+			if(i != min) {
+				swap(array, i, min);
 			}
 		}
 	}
@@ -81,6 +148,18 @@ public class Sorts {
 			for (int j = 0; j < size - i; j++) {
 				if(list.get(j).compareTo(list.get(j+1)) > 0) {
 					swap(list, j, j+1);
+				}
+			}
+		}
+	}
+	
+	public static <E extends Comparable<E>> void bubbleSort(E[] array) {
+		int size = array.length-1;
+		
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size - i; j++) {
+				if(array[j].compareTo(array[j+1]) > 0) {
+					swap(array, j, j+1);
 				}
 			}
 		}
